@@ -2,54 +2,47 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "hardhat/console.sol";
-
 /**
  * @title Owner
- * @dev Set & change owner
+ * @dev Define e altera o proprietário do contrato
  */
 contract Owner {
 
-    address private owner;
+    address private owner; // Armazena o endereço do proprietário
 
-    // event for EVM logging
+    // Evento para registro no EVM
     event OwnerSet(address indexed oldOwner, address indexed newOwner);
 
-    // modifier to check if caller is owner
+    // Modificador para verificar se o chamador é o proprietário
     modifier isOwner() {
-        // If the first argument of 'require' evaluates to 'false', execution terminates and all
-        // changes to the state and to Ether balances are reverted.
-        // This used to consume all gas in old EVM versions, but not anymore.
-        // It is often a good idea to use 'require' to check if functions are called correctly.
-        // As a second argument, you can also provide an explanation about what went wrong.
+        // Verifica se o remetente da chamada é o proprietário
         require(msg.sender == owner, "Caller is not owner");
-        _;
+        _; // Continua a execução da função
     }
 
     /**
-     * @dev Set contract deployer as owner
+     * @dev Define o criador do contrato como proprietário
      */
     constructor() {
-        console.log("Owner contract deployed by:", msg.sender);
-        owner = msg.sender; // 'msg.sender' is sender of current call, contract deployer for a constructor
-        emit OwnerSet(address(0), owner);
+        owner = msg.sender; // 'msg.sender' é o remetente da chamada atual, que é o criador do contrato
+        emit OwnerSet(address(0), owner); // Emite um evento informando que o proprietário foi definido
     }
 
     /**
-     * @dev Change owner
-     * @param newOwner address of new owner
+     * @dev Altera o proprietário
+     * @param newOwner endereço do novo proprietário
      */
     function changeOwner(address newOwner) public isOwner {
-        require(newOwner != address(0), "New owner should not be the zero address");
-        emit OwnerSet(owner, newOwner);
-        owner = newOwner;
+        require(newOwner != address(0), "New owner should not be the zero address"); // Verifica se o novo proprietário não é o endereço zero
+        emit OwnerSet(owner, newOwner); // Emite um evento informando a mudança de proprietário
+        owner = newOwner; // Atualiza o proprietário
     }
 
     /**
-     * @dev Return owner address 
-     * @return address of owner
+     * @dev Retorna o endereço do proprietário 
+     * @return endereço do proprietário
      */
     function getOwner() external view returns (address) {
-        return owner;
+        return owner; // Retorna o endereço do proprietário
     }
 } 
